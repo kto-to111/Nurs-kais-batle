@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Рулетка 50/50</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 40px; /* Увеличил паддинг для красоты */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        #spinButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: transform 0.3s; /* Плавный переход для кнопки */
+        }
+        #spinButton:hover {
+            transform: scale(1.05);
+        }
+        /* Класс для анимации нажатия */
+        #spinButton.spinning {
+            background-color: #0056b3;
+            transform: rotate(360deg);
+            transition: transform 0.5s ease-out;
+        }
+
+        #resultArea {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            opacity: 0; /* Скрываем по умолчанию */
+            animation: fadeIn 0.5s forwards; /* Анимация появления */
+        }
+
+        /* Определение анимации появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Рулетка Фортуны (50/50)</h1>
+        <p>Нажмите кнопку ниже, чтобы испытать удачу.</p>
+        <button id="spinButton" onclick="spin()">Крутить!</button>
+        <div id="resultArea"></div>
+    </div>
+
+    <script>
+        function spin() {
+            const button = document.getElementById('spinButton');
+            const resultArea = document.getElementById('resultArea');
+
+            // 1. Анимация кнопки: добавляем класс spinning
+            button.classList.add('spinning');
+            button.disabled = true; // Отключаем кнопку на время анимации
+
+            // Очищаем предыдущий результат и скрываем его мгновенно перед новым появлением
+            resultArea.innerText = '';
+            resultArea.style.opacity = 0;
+            resultArea.style.animation = 'none';
+            // Принудительный рестарт анимации в некоторых браузерах
+            void resultArea.offsetWidth; 
+
+            // 2. Имитация "вращения" (задержка перед показом результата)
+            setTimeout(() => {
+                // 3. Вычисление результата
+                const outcome = Math.random() < 0.5 ? "Красное (Выигрыш)!" : "Черное (Проигрыш) :(";
+                
+                // 4. Отображение результата
+                resultArea.innerText = outcome;
+                
+                if (outcome.includes("Выигрыш")) {
+                    resultArea.style.color = 'red';
+                } else {
+                    resultArea.style.color = 'black';
+                }
+
+                // 5. Включаем анимацию появления результата (fadeIn)
+                resultArea.style.animation = 'fadeIn 0.5s forwards';
+
+                // 6. Убираем класс spinning с кнопки и включаем ее обратно
+                button.classList.remove('spinning');
+                button.disabled = false;
+                
+            }, 1000); // Задержка в 1 секунду (имитация вращения)
+        }
+    </script>
+</body>
+</html>

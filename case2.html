@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Открытие Кейса и Инвентарь</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #2e2e2e; color: white; margin-bottom: 50px;}
+        .container { padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; width: 90%; margin: auto; }
+        #balance { font-size: 1.5em; font-weight: bold; color: #4CAF50; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 5px; }
+        #resultArea { margin-top: 20px; font-size: 24px; font-weight: bold; padding: 15px; border-radius: 5px; min-height: 1em; }
+        .loading {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Цвета редкости */
+        .color-common { background-color: #b0c3d9; color: black; }
+        .color-rare { background-color: #4b69ff; }
+        .color-epic { background-color: #8847ff; }
+        .color-legendary { background-color: #d32ee6; }
+        .color-knife { background-color: #eb4b4b; }
+
+        /* Стили инвентаря */
+        #inventoryArea h2 { margin-top: 40px; }
+        .inventory-item {
+            padding: 10px;
+            margin: 5px auto;
+            width: 80%;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: black; /* Чтобы текст на цветном фоне был виден */
+        }
+        .sell-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Симулятор открытия кейса</h1>
+        <div>Баланс: <span id="balance">0 тнг.</span></div>
+    </div>
+    <div class="container">
+        <button id="openButton" onclick="openCase()">Открыть Кейс (1000 тнг.)</button>
+        <button onclick="addMoney()">Пополнить (5000 тнг.)</button>
+        <div id="resultArea">Нажмите "Открыть Кейс", чтобы получить скин!</div>
+    </div>
+
+    <div id="inventoryArea">
+        <h2>Ваш инвентарь:</h2>
+        <div id="inventoryList"></div>
+    </div>
+
+    <script>
+        let userBalance = 5000; 
+        const caseCost = 1000;
+        let userInventory = [];
+
+        const items = [
+            { id: 1, name: "P250 | Sand Dune", rarity: "common", chance: 55, color: "color-common", sell_price: 145 },
+            { id: 2, name: "Glock-18 | High Beam", rarity: "common", chance: 15, color: "color-common", sell_price: 243 },
+            { id: 3, name: "AWP | Atheris", rarity: "rare", chance: 10, color: "color-rare", sell_price: 1246 },
+            { id: 4, name: "AK-47 | Redline", rarity: "epic", chance: 10, color: "color-epic", sell_price: 5543 },
+            { id: 5, name: "M4A4 | Asiimov", rarity: "legendary", chance: 9, color: "color-legendary", sell_price: 50134 },
+            { id: 6, name: "Нож-бабочка", rarity: "knife", chance: 1, color: "color-knife", sell_price: 2543212 },
+        ];
+
+        function updateBalanceDisplay() {
+            document.getElementById('balance').innerText = userBalance + ' тнг.';
+        }
+
+        function addMoney() {
+            userBalance +=5000;
+            updateBalanceDisplay();
+            document.getElementById('resultArea').innerText = 'Баланс пополнен на 5000 тнг.';
+        }
+
+        function sellItem(index) {
+            const itemToSell = userInventory[index];
+            userBalance += itemToSell.sell_price;
+            
+            userInventory.splice(index, 1); 
+            
+            updateBalanceDisplay();
+            updateInventoryDisplay(); 
+            document.getElementById('resultArea').innerText = `Предмет "${itemToSell.name}" продан за ${itemToSell.sell_price} тнг.`;
+        }
+
+        function updateInventoryDisplay() {
+            const listElement = document.getElementById('inventoryList');
+            listElement.innerHTML = '';
+
+            userInventory.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `inventory-item ${item.color}`;
+                itemDiv.innerHTML = `
+                    <span>${item.name} (${item.rarity.toUpperCase()})</span>
+                    <span>Цена продажи: ${item.sell_price} тнг.</span>
+                    <button class="sell-button" onclick="sellItem(${index})">Продать</button>
+                `;
+                listElement.appendChild(itemDiv);
+            });
+        }
+
+        function openCase() {
+            if (userBalance < caseCost) {
+                document.getElementById('resultArea').innerText = 'Недостаточно средств на балансе!';
+                document.getElementById('resultArea').className = '';
+                return;
+            }
+
+            userBalance -= caseCost;
+            updateBalanceDisplay();
+            
+            const resultArea = document.getElementById('resultArea');
+            const openButton = document.getElementById('openButton');
+
+            openButton.disabled = true;
+            resultArea.className = 'loading';
+            resultArea.innerText = '';
+
+            setTimeout(() => {
+                let totalWeight = items.reduce((sum, item) => sum + item.chance, 0);
+                let randomNum = Math.random() * totalWeight;
+                let currentWeight = 0;
+                let foundItem = null;
+
+                for (let i = 0; i < items.length; i++) {
+                    currentWeight += items[i].chance;
+                    if (randomNum <= currentWeight) {
+                        foundItem = items[i];
+                        break;
+                    }
+                }
+
+                userInventory.push(foundItem);
+                updateInventoryDisplay();
+
+                resultArea.innerText = `Выпал предмет: ${foundItem.name} (${foundItem.rarity.toUpperCase()})`;
+                resultArea.classList.remove('loading');
+                resultArea.classList.add(foundItem.color);
+                openButton.disabled = false;
+
+            }, 2000);
+        }
+
+        // Инициализация при загрузке страницы
+        updateBalanceDisplay();
+        updateInventoryDisplay();
+    </script>
+</body>
+</html>

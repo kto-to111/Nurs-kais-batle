@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Рулетка шиноби даттебае/дцп</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #spinButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #resultArea {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Рулетка Даттебае</h1>
+        <p>Нажми чтобы узнать свою судьбу в мире "Наруто"</p>
+	<button id="spinButton" onclick="spin()">Смех а потом погнали</button>
+        <div id="resultArea"></div>
+	Нажми <a href="index.html">сюда</a> чтобы вернуться
+    </div>
+
+    <script>
+        function spin() {
+            // В чистом виде JavaScript тоже может генерировать 50/50
+            const outcome = Math.random() < 0.5 ? "Сасуто (Сын Наруто и Саске)" : "Дцп (ыыаааыааыыыыыаа(слюньки))";
+            
+            document.getElementById('resultArea').innerText = outcome;
+            
+            // Добавляем немного динамики
+            if (outcome.includes("Выигрыш")) {
+                document.getElementById('resultArea').style.color = 'red';
+            } else {
+                document.getElementById('resultArea').style.color = 'black';
+            }
+        }
+    </script>
+</body>
+</html>

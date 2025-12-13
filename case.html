@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Открытие Кейса (Lite Анимация)</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #2e2e2e; color: white; }
+        .container { padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #resultArea { margin-top: 20px; font-size: 24px; font-weight: bold; padding: 15px; border-radius: 5px; min-height: 1em; }
+
+        /* Цвета редкости скинов */
+        .color-common { background-color: #b0c3d9; color: black; }
+        .color-rare { background-color: #4b69ff; }
+        .color-epic { background-color: #8847ff; }
+        .color-legendary { background-color: #d32ee6; }
+        .color-knife { background-color: #eb4b4b; }
+
+        /* CSS Анимация загрузки (вращение) */
+        .loading {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Симулятор открытия кейса</h1>
+        <button id="openButton" onclick="openCase()">Открыть Кейс (10000 тнг.)</button>
+        <div id="resultArea">Нажмите "Открыть Кейс", чтобы получить скин!</div>
+   	Нажмите <a href="index.html">сюда</a> чтобы вернуться на главное меню
+    </div>
+
+    <script>
+        function openCase() {
+            const resultArea = document.getElementById('resultArea');
+            const openButton = document.getElementById('openButton');
+
+            // Блокируем кнопку и показываем загрузку
+            openButton.disabled = true;
+            resultArea.className = 'loading';
+            resultArea.innerText = '';
+
+            // Имитация "прокрутки" с задержкой в 2 секунды
+            setTimeout(() => {
+                // Логика выбора предмета из предыдущего примера
+                const items = [
+                    { name: "P250 | Sand Dune (244 тнг.)", rarity: "common", chance: 55, color: "color-common" },
+                    { name: "Glock-18 | High Beam (145 тнг.)", rarity: "common", chance: 15, color: "color-common" },
+                    { name: "AWP | Atheris (1231 тнг.)", rarity: "rare", chance: 10, color: "color-rare" },
+                    { name: "AK-47 | Redline (5000 тнг.)", rarity: "epic", chance: 10, color: "color-epic" },
+                    { name: "M4A4 | Asiimov (54301 тнг.)", rarity: "legendary", chance: 7, color: "color-legendary" },
+                    { name: "Нож-бабочка (2134576 тнг.)", rarity: "knife", chance: 3, color: "color-knife" },
+                ];
+
+                let totalWeight = items.reduce((sum, item) => sum + item.chance, 0);
+                let randomNum = Math.random() * totalWeight;
+                let currentWeight = 0;
+                let foundItem = null;
+
+                for (let i = 0; i < items.length; i++) {
+                    currentWeight += items[i].chance;
+                    if (randomNum <= currentWeight) {
+                        foundItem = items[i];
+                        break;
+                    }
+                }
+
+                // Отображение результата и разблокировка кнопки
+                resultArea.innerText = `Выпал предмет: ${foundItem.name} (${foundItem.rarity.toUpperCase()})`;
+                resultArea.classList.remove('loading'); // Убираем анимацию загрузки
+                resultArea.classList.add(foundItem.color);
+                openButton.disabled = false;
+
+            }, 2000); // Задержка 2 секунды
+        }
+    </script>
+</body>
+</html>
