@@ -26,7 +26,7 @@ body {
     height: 100%;
     border-radius: 50%;
     position: relative;
-    /* Фон будет установлен через JS, чтобы учесть количество секторов */
+    /* Фон будет установлен через JS */
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -37,13 +37,12 @@ body {
     width: 50%;
     height: 50%;
     transform-origin: bottom left;
+    /* Используем flexbox для центрирования контента внутри li */
     display: flex;
-    /* Изменяем выравнивание для лучшего размещения текста */
     justify-content: center; 
-    align-items: center; /* Центрируем вертикально */
-    padding: 0 10px; /* Убираем padding-top, добавляем общий отступ */
+    align-items: center; 
+    padding: 0; /* Убираем отступы */
     box-sizing: border-box;
-    /* Цвет и поворот будут установлены через JS */
 }
 
 .wheel li span {
@@ -54,7 +53,9 @@ body {
     text-align: center;
     max-width: 100%;
     white-space: nowrap;
-    /* Transform теперь полностью управляется через JS для обеспечения горизонтальности */
+    /* Убираем все трансформации из CSS */
+    transform: none; 
+    padding-left: 20px; /* Небольшой отступ от центра */
 }
 
 .pointer {
@@ -66,7 +67,7 @@ body {
     height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 25px solid #ff4500; /* Цвет указателя */
+    border-bottom: 25px solid #ff4500;
     z-index: 10;
 }
 
