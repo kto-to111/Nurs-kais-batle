@@ -35,16 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const span = document.createElement('span');
             span.textContent = sector.label;
             
-            // ВАЖНО: Поворачиваем текст обратно, чтобы он был читаемым и радиально расположенным
-            // Угол поворота рассчитывается как половина угла сектора минус 90 градусов (чтобы текст смотрел "наружу")
-            const textRotation = rotateAngle / 2 - 90;
-            span.style.transform = `rotate(${textRotation}deg)`;
+            // ВАЖНО: Поворачиваем текст обратно ровно на тот же угол, что и li, 
+            // чтобы он всегда оставался горизонтальным.
+            // Также добавляем смещение transformY, чтобы текст был дальше от центра
+            span.style.transform = `rotate(-${index * rotateAngle}deg) translateY(-20px)`;
 
             li.appendChild(span);
             wheelElement.appendChild(li);
         });
     }
 
+    // ... (Остальные функции spinWheel и determineWinner остаются прежними) ...
     // Функция для вращения колеса
     function spinWheel() {
         spinBtn.disabled = true;
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resultMessage.textContent = `Поздравляем! Вы выиграли: ${prize.label}`;
     }
+
 
     createWheel();
     spinBtn.addEventListener('click', spinWheel);
