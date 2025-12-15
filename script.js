@@ -3,16 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const spinBtn = document.getElementById('spin-btn');
     const resultMessage = document.getElementById('result-message');
 
-    // Определяем секторы и их цвета
+    // Определяем секторы и их цвета/названия
     const sectors = [
-        { label: "Приз 1", color: "#ff4d4d" },
-        { label: "Приз 2", color: "#ffb84d" },
-        { label: "Приз 3", color: "#ffe64d" },
-        { label: "Приз 4", color: "#8aff4d" },
-        { label: "Приз 5", color: "#4dffb8" },
-        { label: "Приз 6", color: "#4db8ff" },
-        { label: "Приз 7", color: "#4d4dff" },
-        { label: "Приз 8", color: "#b84dff" }
+        { label: "Приз №1 (Автомобиль)", color: "#ff4d4d" },
+        { label: "Приз №2 (Отпуск)", color: "#ffb84d" },
+        { label: "Приз №3 (Телефон)", color: "#ffe64d" },
+        { label: "Приз №4 (Наушники)", color: "#8aff4d" },
+        { label: "Приз №5 (Ничего)", color: "#4dffb8" },
+        { label: "Приз №6 (100 руб)", color: "#4db8ff" },
+        { label: "Приз №7 (500 руб)", color: "#4d4dff" },
+        { label: "Приз №8 (1000 руб)", color: "#b84dff" }
     ];
 
     const numSectors = sectors.length;
@@ -21,14 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция для создания секторов в HTML и установки conic-gradient
     function createWheel() {
-        let gradientColors = [];
-        sectors.forEach((sector, index) => {
-            // Добавляем элемент списка для текста приза (для простоты примера оставим только градиент)
-            // Более сложное позиционирование текста решается с помощью JS или Canvas
-        });
-
-        // Используем conic-gradient для создания визуальных секторов
-        // Это более простой способ, чем позиционировать <li> элементы
+        // 1. Устанавливаем фон с conic-gradient (визуальные сектора)
         let conicGradient = 'conic-gradient(';
         sectors.forEach((sector, index) => {
             const startAngle = index * rotateAngle;
@@ -37,6 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         conicGradient += ')';
         wheelElement.style.background = conicGradient;
+
+        // 2. Добавляем элементы <li> для размещения текста
+        sectors.forEach((sector, index) => {
+            const li = document.createElement('li');
+            // Угол поворота для каждого сектора
+            li.style.transform = `rotate(${index * rotateAngle}deg)`;
+            li.style.backgroundColor = 'transparent'; // Фон уже есть в родителе
+
+            const span = document.createElement('span');
+            span.textContent = sector.label;
+            li.appendChild(span);
+            wheelElement.appendChild(li);
+        });
     }
 
     // Функция для вращения колеса
@@ -44,16 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
         spinBtn.disabled = true;
         resultMessage.textContent = 'Крутится...';
 
-        // Генерируем случайный угол для остановки (минимум 3 полных оборота + случайный угол)
+        // Генерируем случайный угол для остановки (минимум 5 полных оборотов + случайный угол)
         const randomDegree = Math.floor(Math.random() * 360);
-        const totalRotation = currentRotation + 360 * 3 + randomDegree;
+        const totalRotation = currentRotation + 360 * 5 + randomDegree;
 
         // Применяем анимацию через Web Animations API для плавности
         const animation = wheelElement.animate([
             { transform: `rotate(${currentRotation}deg)` },
             { transform: `rotate(${totalRotation}deg)` }
         ], {
-            duration: 4000, // Длительность анимации 4 секунды
+            duration: 5000, // Длительность анимации 5 секунд
             easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)', // Плавное замедление
             fill: 'forwards' // Сохранить конечное состояние
         });
@@ -68,28 +74,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция определения победившего сектора
     function determineWinner(angle) {
-        // Указатель находится сверху (0 градусов).
-        // Угол нужно отсчитывать от верха против часовой стрелки или скорректировать
-        // для текущей реализации градиента (от 0 на 3 часа по часовой стрелке).
-        
-        // Корректируем угол так, чтобы 0 градусов был на позиции указателя (12 часов)
-        // и вращение было по часовой стрелке для определения сектора.
-        // Наша анимация вращает по часовой стрелке (увеличение градусов).
-        // Угол в 0 градусов соответствует началу первого сектора (если считать от 3 часов).
-        
-        // Чтобы определить сектор под указателем (вверху, 0/360 град),
-        // нужно скорректировать угол с учетом смещения на 90 градусов (от 3 часов до 12 часов)
-        // и инвертировать направление счета для удобства.
-
-        let normalizedAngle = (360 - (angle % 360) + 90) % 360; // Угол под указателем, отсчет по часовой стрелке от 12ч
+        // Логика определения сектора под указателем (который сверху).
+        // normalizedAngle - это угол под указателем, отсчет по часовой стрелке от 12 часов.
+        let normalizedAngle = (360 - (angle % 360) + 90) % 360; 
         
         const winningIndex = Math.floor(normalizedAngle / rotateAngle);
-        // Индекс может немного отличаться из-за округлений, используем ближайший целый индекс
         const prize = sectors[winningIndex];
 
         resultMessage.textContent = `Поздравляем! Вы выиграли: ${prize.label}`;
     }
 
+    // Инициализация колеса при загрузке страницы
     createWheel();
+    // Добавляем обработчик события на кнопку
     spinBtn.addEventListener('click', spinWheel);
 });
