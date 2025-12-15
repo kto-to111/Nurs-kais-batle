@@ -5,14 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Определяем секторы и их цвета/названия
     const sectors = [
-        { label: "Приз №1 (Автомобиль)", color: "#ff4d4d" },
-        { label: "Приз №2 (Отпуск)", color: "#ffb84d" },
-        { label: "Приз №3 (Телефон)", color: "#ffe64d" },
-        { label: "Приз №4 (Наушники)", color: "#8aff4d" },
-        { label: "Приз №5 (Ничего)", color: "#4dffb8" },
-        { label: "Приз №6 (100 руб)", color: "#4db8ff" },
-        { label: "Приз №7 (500 руб)", color: "#4d4dff" },
-        { label: "Приз №8 (1000 руб)", color: "#b84dff" }
+        { label: "Сасуто (Сын Наруто и Саске)", color: "#ff4d4d" },
+        { label: "Дцп (ыыаааыааыыыыыаа(слюньки))", color: "#ffb84d" },
     ];
 
     const numSectors = sectors.length;
