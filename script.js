@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spinBtn = document.getElementById('spin-btn');
     const resultMessage = document.getElementById('result-message');
 
-    // Определяем секторы и их цвета/названия (как в предыдущем примере)
+    // Ваши секторы из примера
     const sectors = [
         { label: "Дцп (ыыаааыааыыыыыаа(слюньки))", color: "#ff4d4d" },
         { label: "Сасуто (Сын Наруто и Саске)", color: "#ffb84d" },
@@ -37,8 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // ВАЖНО: Поворачиваем текст обратно ровно на тот же угол, что и li, 
             // чтобы он всегда оставался горизонтальным.
-            // Также добавляем смещение transformY, чтобы текст был дальше от центра
-            span.style.transform = `rotate(-${index * rotateAngle}deg) translateY(-20px)`;
+            span.style.transform = `rotate(-${index * rotateAngle}deg)`;
 
             li.appendChild(span);
             wheelElement.appendChild(li);
@@ -46,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ... (Остальные функции spinWheel и determineWinner остаются прежними) ...
-    // Функция для вращения колеса
     function spinWheel() {
         spinBtn.disabled = true;
         resultMessage.textContent = 'Крутится...';
@@ -70,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Функция определения победившего сектора
     function determineWinner(angle) {
         let normalizedAngle = (360 - (angle % 360) + 90) % 360; 
         const winningIndex = Math.floor(normalizedAngle / rotateAngle);
@@ -78,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resultMessage.textContent = `Поздравляем! Вы выиграли: ${prize.label}`;
     }
-
 
     createWheel();
     spinBtn.addEventListener('click', spinWheel);
