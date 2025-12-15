@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const spinBtn = document.getElementById('spin-btn');
     const resultMessage = document.getElementById('result-message');
 
-    // Определяем секторы и их цвета/названия
+    // Определяем секторы и их цвета/названия (как в предыдущем примере)
     const sectors = [
-        { label: "Сасуто (Сын Наруто и Саске)", color: "#ff4d4d" },
-        { label: "Дцп (ыыаааыааыыыыыаа(слюньки))", color: "#ffb84d" },
+        { label: "Дцп (ыыаааыааыыыыыаа(слюньки))", color: "#ff4d4d" },
+        { label: "Сасуто (Сын Наруто и Саске)", color: "#ffb84d" },
     ];
 
     const numSectors = sectors.length;
@@ -28,12 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Добавляем элементы <li> для размещения текста
         sectors.forEach((sector, index) => {
             const li = document.createElement('li');
-            // Угол поворота для каждого сектора
+            
+            // Угол поворота для каждого сектора (поворачивает весь li по радиусу)
             li.style.transform = `rotate(${index * rotateAngle}deg)`;
-            li.style.backgroundColor = 'transparent'; // Фон уже есть в родителе
 
             const span = document.createElement('span');
             span.textContent = sector.label;
+            
+            // ВАЖНО: Поворачиваем текст обратно, чтобы он был читаемым и радиально расположенным
+            // Угол поворота рассчитывается как половина угла сектора минус 90 градусов (чтобы текст смотрел "наружу")
+            const textRotation = rotateAngle / 2 - 90;
+            span.style.transform = `rotate(${textRotation}deg)`;
+
             li.appendChild(span);
             wheelElement.appendChild(li);
         });
@@ -44,23 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
         spinBtn.disabled = true;
         resultMessage.textContent = 'Крутится...';
 
-        // Генерируем случайный угол для остановки (минимум 5 полных оборотов + случайный угол)
         const randomDegree = Math.floor(Math.random() * 360);
         const totalRotation = currentRotation + 360 * 5 + randomDegree;
 
-        // Применяем анимацию через Web Animations API для плавности
         const animation = wheelElement.animate([
             { transform: `rotate(${currentRotation}deg)` },
             { transform: `rotate(${totalRotation}deg)` }
         ], {
-            duration: 5000, // Длительность анимации 5 секунд
-            easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)', // Плавное замедление
-            fill: 'forwards' // Сохранить конечное состояние
+            duration: 5000,
+            easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
+            fill: 'forwards'
         });
 
-        // Обработка окончания анимации
         animation.onfinish = () => {
-            currentRotation = totalRotation % 360; // Обновляем текущий угол для следующего спина
+            currentRotation = totalRotation % 360;
             spinBtn.disabled = false;
             determineWinner(currentRotation);
         };
@@ -68,18 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция определения победившего сектора
     function determineWinner(angle) {
-        // Логика определения сектора под указателем (который сверху).
-        // normalizedAngle - это угол под указателем, отсчет по часовой стрелке от 12 часов.
         let normalizedAngle = (360 - (angle % 360) + 90) % 360; 
-        
         const winningIndex = Math.floor(normalizedAngle / rotateAngle);
         const prize = sectors[winningIndex];
 
         resultMessage.textContent = `Поздравляем! Вы выиграли: ${prize.label}`;
     }
 
-    // Инициализация колеса при загрузке страницы
     createWheel();
-    // Добавляем обработчик события на кнопку
     spinBtn.addEventListener('click', spinWheel);
 });
