@@ -38,9 +38,10 @@ body {
     height: 50%;
     transform-origin: bottom left;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 15px; /* Отступ текста от центра */
+    /* Изменяем выравнивание для лучшего размещения текста */
+    justify-content: center; 
+    align-items: center; /* Центрируем вертикально */
+    padding: 0 10px; /* Убираем padding-top, добавляем общий отступ */
     box-sizing: border-box;
     /* Цвет и поворот будут установлены через JS */
 }
@@ -53,6 +54,8 @@ body {
     text-align: center;
     max-width: 100%;
     white-space: nowrap;
+    /* Transform теперь полностью управляется через JS для обеспечения горизонтальности */
+}
 
 .pointer {
     position: absolute;
